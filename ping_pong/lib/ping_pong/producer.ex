@@ -37,8 +37,12 @@ defmodule PingPong.Producer do
   end
 
   def handle_call(:get_counts, _from, data) do
-    # TODO - Get the count from each consumer
-    map = %{}
+    # Get the count from each consumer
+    {replies, _bad_node_list} = GenServer.multi_call(Consumer, :total_pings)
+    # ["manager@127.0.0.1": 3, "ping-pong1@127.0.0.1": 3, "ping-pong2@127.0.0.1": 3]
+
+    map = Enum.into(replies, %{})
+
     {:reply, map, data}
   end
 
