@@ -22,7 +22,15 @@ defmodule PingPong.Consumer do
   end
 
   def init(_args) do
+    Process.send_after(self(), :catch_up, 10)
+
     {:ok, @initial}
+  end
+
+  def handle_info(:catch_up, data) do
+    GenServer.abcast(Producer, {:catch_up, self()})
+
+    {:noreply, data}
   end
 
   def handle_cast({:ping, index, node}, data) do

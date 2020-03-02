@@ -27,6 +27,12 @@ defmodule PingPong.Producer do
     {:ok, @initial}
   end
 
+  def handle_cast({:catch_up, pid}, data) do
+    GenServer.cast(pid, {:ping, data.current, Node.self()})
+
+    {:noreply, data}
+  end
+
   def handle_call(:send_ping, _from, data) do
     # Send a ping to all consumer processes
     pings_sent = data.current + 1
