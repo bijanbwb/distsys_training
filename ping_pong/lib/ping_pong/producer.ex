@@ -57,8 +57,13 @@ defmodule PingPong.Producer do
     {:reply, :ok, @initial}
   end
 
+  def handle_info({:nodeup, node}, data) do
+    GenServer.cast({Consumer, node}, {:ping, data.current, Node.self()})
+
+    {:noreply, data}
+  end
+
   def handle_info(_msg, data) do
-    # TODO - Fill me in l8r
     {:noreply, data}
   end
 end
